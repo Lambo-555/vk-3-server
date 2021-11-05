@@ -4,13 +4,17 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
+const { v4 } = require('uuid');
 
 io.on('connection', (socket) => {
   console.log('a user connected');
 });
 
-app.get('/check', (req, res) => {
-  res.send('<h1>Hello world</h1>');
+app.get('/api', (req, res) => {
+  const path = `/api/item/${v4()}`;
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+  res.end(`Hello! Go to item: <a href="${path}">${path}</a>`);
 });
 
 io.on('connection', (socket) => {
